@@ -1,0 +1,49 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres:14.3-alpine
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    env_file: .env
+    ports:
+      - "5433:5432"
+    networks:
+      - net
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: build-dev
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - "8001:8001"
+    networks:
+      - net
+
+  migrate-base: &basemigrate
+    image: migrate/migrate
+    env_file: .env
+    entrypoint: migrate -database "${DEV_DATABASE_URL}" -path /tmp/migration -verbose
+    volumes:
+      - ./db/migration:/tmp/migration
+    networks:
+      - net
+
+  migrate-up:
+    <<: *basemigrate
+    command: up
+
+  migrate-down:
+    <<: *basemigrate
+    command: down
+
+networks:
+  net:
+    driver: bridge
+
+volumes:
+  pgdata:

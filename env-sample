@@ -1,0 +1,12 @@
+PORT=8001
+ENV=DEV
+LOG_LEVEL=debug
+
+# Database
+POSTGRES_HOST=<db_host>
+POSTGRES_PORT=<db_port>
+POSTGRES_USER=<db_user>
+POSTGRES_PASSWORD=<db_password>
+POSTGRES_DB=<db_db>
+
+DEV_DATABASE_URL=<database_url>?sslmode=disable&connect_timeout=60
